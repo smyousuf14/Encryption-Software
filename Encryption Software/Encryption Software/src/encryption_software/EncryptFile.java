@@ -6,6 +6,7 @@ package encryption_software;
 
 // Import packages
 import java.io.*;
+import java.util.ArrayList;
 
 /**
  *
@@ -14,16 +15,14 @@ import java.io.*;
 public class EncryptFile 
 {
     // Instance Variable
-    private String inputFilePath;
-    private String outputFilePath;
+    private String FilePath;
     
     /*
     * Default Constructor
     */
-    public EncryptFile(String inputFilePath,String outputFilePath)
+    public EncryptFile(String FilePath)
     {
-        this.inputFilePath = inputFilePath;
-        this.outputFilePath = outputFilePath;
+        this.FilePath = FilePath;
     }
     
     /*
@@ -34,12 +33,12 @@ public class EncryptFile
     {
         // Local Variable list
         int byteRead;
-        int NewByte;
+        ArrayList<Integer> newByte = new ArrayList<Integer>();
+        int indexNumber;
         
         try
         {
-            InputStream inputStream = new FileInputStream(inputFilePath);
-            OutputStream outputStream = new FileOutputStream(outputFilePath);
+            InputStream inputStream = new FileInputStream(FilePath);
             
             // Encrypt the file 
             while((byteRead = inputStream.read() ) != -1)
@@ -49,16 +48,24 @@ public class EncryptFile
                 if(byteRead > 127)
                 {
                     // Do not increment
-                    NewByte = byteRead;
+                    newByte.add(byteRead);
                 }
                 else
                 {
                     // Increase the new byte value by one.
-                    NewByte = byteRead + 1;
+                    newByte.add(byteRead + 1);
                 }
                 
-                outputStream.write(NewByte);
             }
+            
+            // Add each of the new byte of data into the output file.
+            OutputStream outputStream = new FileOutputStream(FilePath);
+            
+            for(indexNumber = 0; indexNumber < newByte.size(); indexNumber++)
+            {
+                outputStream.write(newByte.get(indexNumber));
+            }
+            
         }
         catch(IOException ex)
         {
@@ -73,12 +80,13 @@ public class EncryptFile
     {
         // Local Variable list
         int byteRead;
-        int NewByte;
+        ArrayList<Integer> newByte = new ArrayList<Integer>();
+        int indexNumber;
         
         try
         {
-            InputStream inputStream = new FileInputStream(outputFilePath);
-            OutputStream outputStream = new FileOutputStream("output2.txt");
+            InputStream inputStream = new FileInputStream(FilePath);
+            
             
             // Encrypt the file 
             while((byteRead = inputStream.read() ) != -1)
@@ -88,16 +96,24 @@ public class EncryptFile
                 if(byteRead > 127)
                 {
                     // Do not increment
-                    NewByte = byteRead;
+                    newByte.add(byteRead); 
                 }
                 else
                 {
                     // Increase the new byte value by one.
-                    NewByte = byteRead - 1;
+                    newByte.add(byteRead - 1); 
                 }
-                
-                outputStream.write(NewByte);
+            }    
+            
+            // Add each of the new byte of data into the output file.
+            OutputStream outputStream = new FileOutputStream(FilePath);
+
+            for(indexNumber = 0; indexNumber < newByte.size(); indexNumber++)
+            {
+                outputStream.write(newByte.get(indexNumber));
             }
+                
+            
         }
         catch(IOException ex)
         {
@@ -109,8 +125,8 @@ public class EncryptFile
     // Test Method
     public static void main(String[]args)
     {
-        EncryptFile e1 = new EncryptFile("test1.txt", "output1.txt");
-        e1.decryptFile();
+        EncryptFile e1 = new EncryptFile("test2.doc");
+        e1.encryptFile();
     }
     
     
